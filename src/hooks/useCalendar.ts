@@ -28,8 +28,7 @@ const useCalendar = () => {
       if (currDate.getDay() === 0) break;
     }
 
-    currDate.setMonth(thisFirstDay.getMonth());
-    currDate.setDate(thisFirstDay.getDate());
+    currDate.setMonth(thisFirstDay.getMonth(), 1);
 
     while (result.length < maxWeekLen) {
       week.push(new Date(currDate));
