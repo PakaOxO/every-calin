@@ -2,28 +2,23 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import useCalendar from '../../hooks/useCalendar';
-import CalendarHeader from './CalendarHeader';
-import CalendarBody from './CalendarBody';
-import { useRecoilValue } from 'recoil';
-import { currDateState } from '../../atom/Date';
 
 const Calendar = () => {
   const { getThisMonth } = useCalendar();
-  const currDate = useRecoilValue<Date>(currDateState);
-  console.log(currDate);
-  const dates: Date[][] = getThisMonth(currDate, 6);
+  const today = new Date();
+  const prev = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+  const dates = getThisMonth(prev, 6);
+  console.log(dates.join('\n'));
 
   return (
     <div
       css={css`
-        margin: 0 auto;
-        width: 100%;
-        max-width: 960px;
+        width: 300px;
+        height: 300px;
+        background-color: skyblue;
       `}
-    >
-      <CalendarHeader date={currDate} />
-      <CalendarBody dates={dates} />
-    </div>
+    ></div>
   );
 };
 
