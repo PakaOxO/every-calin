@@ -8,7 +8,8 @@ import { settingMenuState } from '../../atom/Menu';
 
 const CalendarTopMenu = () => {
   const setMenuOpenState = useSetRecoilState<boolean>(settingMenuState);
-  const leftMenuOpenHandler = () => {
+  const leftMenuOpenHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
     setMenuOpenState((state) => !state);
   };
 

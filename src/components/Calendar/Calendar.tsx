@@ -4,20 +4,25 @@ import { css } from '@emotion/react';
 import useCalendar from '../../hooks/useCalendar';
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currDateState } from '../../atom/Date';
 import CalendarTopMenu from './CalendarTopMenu';
 import CalendarSettingMenu from './CalendarSettingMenu';
 import { settingMenuState, todoMenuState } from '../../atom/Menu';
 import CalendarTodoMenu from './CalendarTodoMenu';
+import { selectedTodoState, Todo } from '../../atom/Todo';
 
 const Calendar = () => {
   const { getThisMonth } = useCalendar();
   const currDate = useRecoilValue<Date>(currDateState);
-  console.log(currDate);
   const dates: Date[][] = getThisMonth(currDate, 6);
   const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
   const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
+  const setSelectedTodo = useSetRecoilState<Todo | null>(selectedTodoState);
+
+  const resetSelectedTodoHandler = () => {
+    setSelectedTodo(null);
+  };
 
   return (
     <div
@@ -26,6 +31,7 @@ const Calendar = () => {
         width: 100%;
         display: flex;
       `}
+      onClick={resetSelectedTodoHandler}
     >
       <section
         css={css`
