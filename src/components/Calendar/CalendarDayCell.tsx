@@ -14,6 +14,10 @@ const CalendarDayCell = ({ day }: IProps) => {
         width: 14.28%;
         text-align: right;
         padding: 0 4px;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* 인터넷익스플로러 */
+        user-select: none;
       `}
     >
       <span>{day}</span>
