@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css } from '@emotion/react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currDateState } from '../../atom/Date';
+import { selectedTodoState, Todo } from '../../atom/Todo';
 
 interface IProps {
   date: Date;
@@ -10,24 +11,35 @@ interface IProps {
 }
 
 const CalendarDateCell = React.memo(({ date, isToday }: IProps) => {
+  const setSelectedTodo = useSetRecoilState(selectedTodoState);
   const currDate = useRecoilValue<Date>(currDateState);
-  console.log(currDate.getMonth(), date.getMonth());
   const isThisMonth = currDate.getMonth() === date.getMonth();
+
+  const createTodoHandler = () => {
+    const todo: Todo = {
+      cId: '1234',
+      title: '오늘의 할일',
+      date: new Date(),
+    };
+
+    setSelectedTodo(todo);
+  };
 
   return (
     <div
       css={css`
-        width: 14.4%;
-        height: 100px;
+        flex: 1;
+        height: 101%;
         border: 1px solid #aaa;
         box-sizing: border-box;
+        margin-top: -1px;
         margin-right: -1px;
-        margin-bottom: -1px;
 
         &:hover {
           cursor: pointer;
         }
       `}
+      onDoubleClick={createTodoHandler}
     >
       <div
         css={css`

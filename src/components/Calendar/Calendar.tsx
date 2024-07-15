@@ -6,23 +6,60 @@ import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
 import { useRecoilValue } from 'recoil';
 import { currDateState } from '../../atom/Date';
+import CalendarTopMenu from './CalendarTopMenu';
+import CalendarSettingMenu from './CalendarSettingMenu';
+import { settingMenuState, todoMenuState } from '../../atom/Menu';
+import CalendarTodoMenu from './CalendarTodoMenu';
 
 const Calendar = () => {
   const { getThisMonth } = useCalendar();
   const currDate = useRecoilValue<Date>(currDateState);
   console.log(currDate);
   const dates: Date[][] = getThisMonth(currDate, 6);
+  const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
+  const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
 
   return (
     <div
       css={css`
         margin: 0 auto;
         width: 100%;
-        max-width: 960px;
+        display: flex;
       `}
     >
-      <CalendarHeader date={currDate} />
-      <CalendarBody dates={dates} />
+      <section
+        css={css`
+          width: ${leftMenuIsOpen ? '280px' : '0px'};
+          overflow: hidden;
+          transition: width 0.3s ease;
+          border-right: 1px solid #aaa;
+          margin-right: -1px;
+        `}
+      >
+        <CalendarSettingMenu />
+      </section>
+      <section
+        css={css`
+          margin: 0 auto;
+          width: 100%;
+          max-width: 980px;
+        `}
+      >
+        <CalendarTopMenu />
+        <CalendarHeader date={currDate} />
+        <CalendarBody dates={dates} />
+      </section>
+      <section
+        css={css`
+          width: ${rightMenuIsOpen ? '280px' : '0px'};
+          overflow: hidden;
+          transition: width 0.3s ease;
+          border-left: 1px solid #aaa;
+          margin-right: -1px;
+        `}
+      >
+        <CalendarTodoMenu />
+      </section>
     </div>
   );
 };
