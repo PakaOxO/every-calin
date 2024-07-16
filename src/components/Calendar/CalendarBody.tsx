@@ -17,6 +17,7 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
     <div
       css={css`
         width: 100%;
+        height: calc(100vh - 40px - 60px);
       `}
     >
       <div
@@ -35,6 +36,7 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
       <div
         css={css`
           width: 100%;
+          height: calc((100% - 32px) / 6);
           box-sizing: border-box;
         `}
       >
@@ -43,6 +45,7 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
             key={weekIdx}
             css={css`
               width: 100%;
+              height: 100%;
               display: flex;
             `}
           >

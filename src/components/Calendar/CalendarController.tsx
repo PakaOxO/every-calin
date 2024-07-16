@@ -3,6 +3,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { css } from '@emotion/react';
 import { useSetRecoilState } from 'recoil';
 import { currDateState } from '../../atom/Date';
+import Button from '../UI/Button';
 
 interface IProps {
   date: Date;
@@ -28,9 +29,9 @@ const CalendarController = ({ date }: IProps) => {
 
   return (
     <div>
-      <button onClick={getPrevMonthHandler}>{'<'}</button>
-      <button onClick={getCurrMonthHandler}>{'오늘'}</button>
-      <button onClick={getNextMonthHandler}>{'>'}</button>
+      <Button onClick={getPrevMonthHandler}>{'<'}</Button>
+      <Button onClick={getCurrMonthHandler}>{'오늘'}</Button>
+      <Button onClick={getNextMonthHandler}>{'>'}</Button>
     </div>
   );
 };
