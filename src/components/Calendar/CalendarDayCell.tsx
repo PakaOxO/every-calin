@@ -3,24 +3,27 @@ import React from 'react';
 import { css } from '@emotion/react';
 
 interface IProps {
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-  children: React.ReactNode;
+  day: string;
 }
-const Button = ({ onClick, children }: IProps) => {
+
+const CalendarDayCell = ({ day }: IProps) => {
   return (
-    <button
+    <div
       css={css`
+        box-sizing: border-box;
+        width: 14.28%;
+        text-align: right;
+        padding: 0 4px;
         -webkit-touch-callout: none; /* iOS Safari */
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* 인터넷익스플로러 */
         user-select: none;
       `}
-      onClick={onClick}
     >
-      {children}
-    </button>
+      <span>{day}</span>
+    </div>
   );
 };
 
-export default Button;
+export default CalendarDayCell;
 
