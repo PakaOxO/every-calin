@@ -10,7 +10,6 @@ const CalendarDayCell = ({ day }: IProps) => {
   return (
     <div
       css={css`
-        box-sizing: border-box;
         width: 14.28%;
         text-align: right;
         padding: 0 4px;

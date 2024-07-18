@@ -1,23 +1,40 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import CalendarDayCell from './CalendarDayCell';
 import CalendarDateCell from './CalendarDateCell';
+import { dateMappedTodoListState, Todo } from '../../atom/Todo';
+import { useRecoilValue } from 'recoil';
+import { dateFormatter } from '../../core/date';
 
 interface IProps {
+  days: string[];
   dates: Date[][];
+  todoCreateHandler: (date: Date) => boolean;
 }
 
-const DAY = ['일', '월', '화', '수', '목', '금', '토'];
-
-const CalendarBody = React.memo(({ dates }: IProps) => {
+const CalendarBody = React.memo(({ days, dates, todoCreateHandler }: IProps) => {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  const todoDateMap = useRecoilValue<Map<string, Todo[]>>(dateMappedTodoListState);
   const today = new Date();
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    };
+  }, [window.innerWidth]);
+
+  const resizeHandler = () => {
+    setWidth(window.innerWidth);
+  };
 
   return (
     <div
       css={css`
         width: 100%;
-        height: calc(100vh - 40px - 60px);
+        height: ${width <= 480 ? 'calc(60vh - 40px - 60px)' : 'calc(100vh - 40px - 60px)'};
       `}
     >
       <div
@@ -29,7 +46,7 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
           height: 32px;
         `}
       >
-        {DAY.map((day, idx) => (
+        {days.map((day, idx) => (
           <CalendarDayCell key={idx} day={day} />
         ))}
       </div>
@@ -37,7 +54,6 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
         css={css`
           width: 100%;
           height: calc((100% - 32px) / 6);
-          box-sizing: border-box;
         `}
       >
         {dates.map((week, weekIdx) => (
@@ -53,6 +69,8 @@ const CalendarBody = React.memo(({ dates }: IProps) => {
               <CalendarDateCell
                 key={`${weekIdx}-${dateIdx}`}
                 date={date}
+                todos={todoDateMap.get(dateFormatter(date))}
+                todoCreateHandler={todoCreateHandler}
                 isToday={
                   today.getFullYear() === date.getFullYear() &&
                   today.getMonth() === date.getMonth() &&

@@ -1,29 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css } from '@emotion/react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { currDateState } from '../../atom/Date';
-import { selectedTodoState, Todo } from '../../atom/Todo';
+import CalendarTodo from './CalendarTodo';
+import { Todo } from '../../atom/Todo';
 
 interface IProps {
   date: Date;
+  todos: Todo[] | undefined;
+  todoCreateHandler: (date: Date) => boolean;
   isToday: boolean;
 }
 
-const CalendarDateCell = React.memo(({ date, isToday }: IProps) => {
-  const setSelectedTodo = useSetRecoilState(selectedTodoState);
+const CalendarDateCell = React.memo(({ date, todos, todoCreateHandler, isToday }: IProps) => {
   const currDate = useRecoilValue<Date>(currDateState);
   const isThisMonth = currDate.getMonth() === date.getMonth();
-
-  const createTodoHandler = () => {
-    const todo: Todo = {
-      cId: '1234',
-      title: '오늘의 할일',
-      date: new Date(),
-    };
-
-    setSelectedTodo(todo);
-  };
 
   return (
     <div
@@ -31,32 +23,28 @@ const CalendarDateCell = React.memo(({ date, isToday }: IProps) => {
         flex: 1;
         height: 101%;
         border: 1px solid #aaa;
-        box-sizing: border-box;
         margin-top: -1px;
         margin-right: -1px;
+        overflow: hidden;
 
         &:hover {
           cursor: pointer;
         }
       `}
-      onDoubleClick={createTodoHandler}
+      onDoubleClick={() => todoCreateHandler(date)}
     >
       <div
         css={css`
           width: 100%;
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          padding: 4px;
-          box-sizing: border-box;
         `}
       >
         <p
           css={css`
             position: relative;
             margin: 0;
-            height: 24px;
+            padding: 4px;
             display: flex;
+            justify-content: flex-end;
             align-items: center;
             color: ${isThisMonth ? '#000' : '#aaa'};
             -webkit-touch-callout: none; /* iOS Safari */
@@ -83,6 +71,14 @@ const CalendarDateCell = React.memo(({ date, isToday }: IProps) => {
           </span>
           일
         </p>
+        <div
+          css={css`
+            width: 100%;
+            padding: 0 1px;
+          `}
+        >
+          {todos && todos.map((todo) => <CalendarTodo key={todo.cId} todo={todo} />)}
+        </div>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { css } from '@emotion/react';
 import useCalendar from '../../hooks/useCalendar';
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { currDateState } from '../../atom/Date';
 import CalendarTopMenu from './CalendarTopMenu';
 import CalendarSettingMenu from './CalendarSettingMenu';
@@ -13,14 +13,15 @@ import CalendarTodoMenu from './CalendarTodoMenu';
 import { selectedTodoState, Todo } from '../../atom/Todo';
 
 const Calendar = () => {
-  const { getThisMonth } = useCalendar();
   const currDate = useRecoilValue<Date>(currDateState);
-  const dates: Date[][] = getThisMonth(currDate, 6);
+  const { days, getThisMonth, createTodo } = useCalendar();
+  const dates: Date[][] = useMemo(() => getThisMonth(currDate, 6), [currDate]);
   const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
   const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
-  const setSelectedTodo = useSetRecoilState<Todo | null>(selectedTodoState);
+  const [selectedTodo, setSelectedTodo] = useRecoilState<Todo | null>(selectedTodoState);
 
   const resetSelectedTodoHandler = () => {
+    if (!!!selectedTodo) return;
     setSelectedTodo(null);
   };
 
@@ -31,7 +32,6 @@ const Calendar = () => {
         width: 100%;
         display: flex;
       `}
-      onClick={resetSelectedTodoHandler}
     >
       <section
         css={css`
@@ -50,10 +50,11 @@ const Calendar = () => {
           width: 100%;
           max-width: 980px;
         `}
+        onClick={resetSelectedTodoHandler}
       >
         <CalendarTopMenu />
         <CalendarHeader date={currDate} />
-        <CalendarBody dates={dates} />
+        <CalendarBody days={days} dates={dates} todoCreateHandler={createTodo} />
       </section>
       <section
         css={css`

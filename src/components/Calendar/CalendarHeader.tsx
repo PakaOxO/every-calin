@@ -19,7 +19,6 @@ const CalendarHeader = React.memo(({ date }: IProps) => {
         width: 100%;
         height: 60px;
         padding: 12px 8px;
-        box-sizing: border-box;
         -webkit-touch-callout: none; /* iOS Safari */
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* 인터넷익스플로러 */
