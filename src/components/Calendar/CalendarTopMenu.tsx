@@ -19,7 +19,6 @@ const CalendarTopMenu = () => {
         width: 100%;
         height: 40px;
         padding: 8px;
-        box-sizing: border-box;
         display: flex;
         align-items: center;
       `}
