@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css } from '@emotion/react';
-import TopMenuItem from './TopMenuItem';
+import SvgComponent from './SvgComponent';
 import { FaBars } from 'react-icons/fa6';
 import { useSetRecoilState } from 'recoil';
 import { settingMenuState } from '../../atom/Menu';
@@ -23,7 +23,7 @@ const CalendarTopMenu = () => {
         align-items: center;
       `}
     >
-      <TopMenuItem icon={<FaBars />} onClick={leftMenuOpenHandler} />
+      <SvgComponent icon={<FaBars />} onClick={leftMenuOpenHandler} />
     </div>
   );
 };

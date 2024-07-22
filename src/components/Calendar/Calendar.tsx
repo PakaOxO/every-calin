@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { css } from '@emotion/react';
 import useCalendar from '../../hooks/useCalendar';
 import CalendarHeader from './CalendarHeader';
@@ -14,11 +14,16 @@ import { selectedTodoState, Todo } from '../../atom/Todo';
 
 const Calendar = () => {
   const currDate = useRecoilValue<Date>(currDateState);
-  const { days, getThisMonth, createTodo, updateTodo } = useCalendar();
+  const { days, getThisMonth, getCategoryList, addCategory, updateCategory, deleteCategory, createTodo, updateTodo } =
+    useCalendar();
   const dates: Date[][] = useMemo(() => getThisMonth(currDate, 6), [currDate]);
   const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
   const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
   const [selectedTodo, setSelectedTodo] = useRecoilState<Todo | null>(selectedTodoState);
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
 
   const resetSelectedTodoHandler = () => {
     if (!!!selectedTodo) return;
@@ -31,23 +36,28 @@ const Calendar = () => {
         margin: 0 auto;
         width: 100%;
         display: flex;
+        overflow: hidden;
       `}
     >
       <section
         css={css`
-          width: ${leftMenuIsOpen ? '280px' : '0px'};
+          width: ${leftMenuIsOpen ? '240px' : '0px'};
           overflow: hidden;
           transition: width 0.3s ease;
           border-right: 1px solid #aaa;
-          margin-right: -1px;
+          margin-left: -1px;
         `}
       >
-        <CalendarSettingMenu />
+        <CalendarSettingMenu
+          categoryAddHandler={addCategory}
+          categoryUpdateHandler={updateCategory}
+          categoryDeleteHandler={deleteCategory}
+        />
       </section>
       <section
         css={css`
           margin: 0 auto;
-          width: 100%;
+          width: calc(100% - 240px - 240px);
           max-width: 980px;
         `}
         onClick={resetSelectedTodoHandler}
@@ -58,7 +68,7 @@ const Calendar = () => {
       </section>
       <section
         css={css`
-          width: ${rightMenuIsOpen ? '280px' : '0px'};
+          width: ${rightMenuIsOpen ? '240px' : '0px'};
           overflow: hidden;
           transition: width 0.3s ease;
           border-left: 1px solid #aaa;
