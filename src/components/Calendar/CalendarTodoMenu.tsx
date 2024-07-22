@@ -2,19 +2,42 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { useRecoilValue } from 'recoil';
-import { selectedTodoDateFormat, selectedTodoState, Todo } from '../../atom/Todo';
+import { selectedTodoState, Todo } from '../../atom/Todo';
 import Input from '../UI/Input';
 import TextArea from '../UI/Textarea';
+import { datetimeFormatter } from '../../core/date';
+import { Category, categoryListState } from '../../atom/Category';
 
-const CalendarTodoMenu = () => {
+interface IProps {
+  todoUpdateHandler: (todo: Todo) => void;
+}
+
+interface IAction {
+  type: string;
+  id: string;
+  value: string | Date;
+}
+
+const CalendarTodoMenu = ({ todoUpdateHandler }: IProps) => {
   const selected = useRecoilValue<Todo | null>(selectedTodoState);
-  const date = useRecoilValue<string>(selectedTodoDateFormat);
+  const categories = useRecoilValue<Category[]>(categoryListState);
+
   if (!selected) return null;
+
+  const onTodoUpdate = (action: IAction) => {
+    let value = action.value;
+    if (action.type === 'date') {
+      value = new Date(action.value);
+    }
+
+    const updated = { ...selected, [action.type]: value };
+    todoUpdateHandler(updated);
+  };
 
   return (
     <div
       css={css`
-        width: 100%;
+        width: 240px;
         padding: 8px;
       `}
       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -38,10 +61,33 @@ const CalendarTodoMenu = () => {
           width: 100%;
         `}
       >
-        <Input type="text" value={selected.title} label="" />
-        <Input type="datetime-local" value={date} label="" />
-        <Input type="text" value={selected.tId} label="캘린더" />
-        <TextArea value={selected.desc} label="메모" placeholder="메모를 작성" />
+        <Input
+          type="text"
+          value={selected.title}
+          onChange={(e) => onTodoUpdate({ type: 'title', id: selected.id, value: e.currentTarget.value })}
+        />
+        <Input
+          type="datetime-local"
+          value={datetimeFormatter(selected.date)}
+          onChange={(e) => onTodoUpdate({ type: 'date', id: selected.id, value: e.currentTarget.value })}
+        />
+        <select
+          name="category"
+          value={selected.category}
+          onChange={(e) => onTodoUpdate({ type: 'category', id: selected.id, value: e.currentTarget.value })}
+        >
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <TextArea
+          value={selected.desc}
+          label="메모"
+          placeholder="메모를 작성"
+          onChange={(e) => onTodoUpdate({ type: 'desc', id: selected.id, value: e.currentTarget.value })}
+        />
       </form>
     </div>
   );

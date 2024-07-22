@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { css } from '@emotion/react';
 import { useRecoilValue } from 'recoil';
 import { currDateState } from '../../atom/Date';
 import CalendarTodo from './CalendarTodo';
 import { Todo } from '../../atom/Todo';
+import { datetimeFormatter } from '../../core/date';
 
 interface IProps {
   date: Date;
@@ -12,6 +13,22 @@ interface IProps {
   todoCreateHandler: (date: Date) => boolean;
   isToday: boolean;
 }
+
+const areEqualProps = (prevProps: IProps, nextProps: IProps): boolean => {
+  if (datetimeFormatter(prevProps.date) !== datetimeFormatter(nextProps.date)) return false;
+  if (prevProps.todos?.length !== nextProps.todos?.length) return false;
+
+  if (prevProps.todos && nextProps.todos) {
+    for (let i = 0; i < prevProps.todos.length; i++) {
+      if (prevProps.todos[i].title !== nextProps.todos[i].title) return false;
+      if (prevProps.todos[i].category !== nextProps.todos[i].category) return false;
+      if (prevProps.todos[i].color !== nextProps.todos[i].color) return false;
+      if (prevProps.todos[i].desc !== nextProps.todos[i].desc) return false;
+    }
+  }
+
+  return true;
+};
 
 const CalendarDateCell = React.memo(({ date, todos, todoCreateHandler, isToday }: IProps) => {
   const currDate = useRecoilValue<Date>(currDateState);
@@ -77,12 +94,12 @@ const CalendarDateCell = React.memo(({ date, todos, todoCreateHandler, isToday }
             padding: 0 1px;
           `}
         >
-          {todos && todos.map((todo) => <CalendarTodo key={todo.cId} todo={todo} />)}
+          {todos && todos.map((todo) => <CalendarTodo key={todo.id} todo={todo} />)}
         </div>
       </div>
     </div>
   );
-});
+}, areEqualProps);
 
 export default CalendarDateCell;
 

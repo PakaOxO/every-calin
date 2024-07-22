@@ -23,16 +23,29 @@ const CalendarTodo = ({ todo }: IProps) => {
         height: 1.2rem;
         padding: 6px;
         margin-bottom: 1px;
-        background: #aaa;
+        background: ${todo.color};
         border-radius: 4px;
         font-size: 0.8rem;
         display: flex;
         align-items: center;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* 인터넷익스플로러 */
+        user-select: none;
       `}
-      key={todo.cId}
+      key={todo.id}
       onClick={selectTodoHandler}
+      onDoubleClick={selectTodoHandler}
     >
-      {todo.title}
+      <p
+        css={css`
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        `}
+      >
+        {todo.title}
+      </p>
     </div>
   );
 };

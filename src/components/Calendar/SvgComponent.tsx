@@ -3,16 +3,17 @@ import React, { ReactEventHandler } from 'react';
 import { css } from '@emotion/react';
 
 interface IProps {
+  size?: number;
   icon: React.ReactNode;
   onClick: ReactEventHandler<HTMLDivElement>;
 }
 
-const TopMenuItem = ({ icon, onClick }: IProps) => {
+const SvgComponent = ({ size = 24, icon, onClick }: IProps) => {
   return (
     <div
       css={css`
-        width: 24px;
-        height: 24px;
+        width: ${size}px;
+        height: ${size}px;
 
         & > svg {
           width: 100%;
@@ -30,5 +31,5 @@ const TopMenuItem = ({ icon, onClick }: IProps) => {
   );
 };
 
-export default TopMenuItem;
+export default SvgComponent;
 
