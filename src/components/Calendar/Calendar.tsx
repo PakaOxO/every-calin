@@ -14,7 +14,7 @@ import { selectedTodoState, Todo } from '../../atom/Todo';
 
 const Calendar = () => {
   const currDate = useRecoilValue<Date>(currDateState);
-  const { days, getThisMonth, createTodo } = useCalendar();
+  const { days, getThisMonth, createTodo, updateTodo } = useCalendar();
   const dates: Date[][] = useMemo(() => getThisMonth(currDate, 6), [currDate]);
   const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
   const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
@@ -65,7 +65,7 @@ const Calendar = () => {
           margin-right: -1px;
         `}
       >
-        <CalendarTodoMenu />
+        <CalendarTodoMenu todoUpdateHandler={updateTodo} />
       </section>
     </div>
   );

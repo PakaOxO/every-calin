@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { dateMappedTodoListState, selectedTodoState, Todo, todoListState } from '../atom/Todo';
 import { dateFormatter, resetDatetime } from '../core/date';
 
 const useCalendar = () => {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
-  const setTodos = useSetRecoilState(todoListState);
+  const [todos, setTodos] = useRecoilState(todoListState);
   const setSelectedTodo = useSetRecoilState<Todo | null>(selectedTodoState);
   const map = useRecoilValue<Map<string, Todo[]>>(dateMappedTodoListState);
 
@@ -73,7 +73,7 @@ const useCalendar = () => {
    */
   const createTodo = useCallback((date: Date): boolean => {
     const todo: Todo = {
-      cId: '1234',
+      cId: Math.floor(Math.random() * 100) + '',
       title: '오늘의 할일',
       date: date,
       tId: '새로운 캘린더',
@@ -88,7 +88,16 @@ const useCalendar = () => {
     return true;
   }, []);
 
-  return { days, getThisMonth, getTodosWithDate, createTodo };
+  const updateTodo = useCallback(
+    (todo: Todo) => {
+      const copy = todos.map((prev) => (prev.cId === todo.cId ? todo : prev));
+      setTodos(copy);
+      setSelectedTodo(todo);
+    },
+    [todos]
+  );
+
+  return { days, getThisMonth, getTodosWithDate, createTodo, updateTodo };
 };
 
 export default useCalendar;

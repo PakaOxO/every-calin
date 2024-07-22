@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { dateFormatter, datetimeFormatter } from '../core/date';
+import { dateFormatter } from '../core/date';
 
 export interface Todo {
   cId: string;
@@ -37,15 +37,5 @@ export const dateMappedTodoListState = selector<Map<string, Todo[]>>({
 export const selectedTodoState = atom<Todo | null>({
   key: 'selectedTodoState',
   default: null,
-});
-
-export const selectedTodoDateFormat = selector<string>({
-  key: 'selectedTodoDateFormat',
-  get: ({ get }) => {
-    const todo = get<Todo | null>(selectedTodoState);
-    if (!todo) return '';
-
-    return datetimeFormatter(todo.date);
-  },
 });
 

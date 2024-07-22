@@ -2,14 +2,35 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { useRecoilValue } from 'recoil';
-import { selectedTodoDateFormat, selectedTodoState, Todo } from '../../atom/Todo';
+import { selectedTodoState, Todo, todoListState } from '../../atom/Todo';
 import Input from '../UI/Input';
 import TextArea from '../UI/Textarea';
+import { dateFormatter, datetimeFormatter } from '../../core/date';
 
-const CalendarTodoMenu = () => {
+interface IProps {
+  todoUpdateHandler: (todo: Todo) => void;
+}
+
+interface IAction {
+  type: string;
+  id: string;
+  value: string | Date;
+}
+
+const CalendarTodoMenu = ({ todoUpdateHandler }: IProps) => {
   const selected = useRecoilValue<Todo | null>(selectedTodoState);
-  const date = useRecoilValue<string>(selectedTodoDateFormat);
+
   if (!selected) return null;
+
+  const onTodoUpdate = (action: IAction) => {
+    let value = action.value;
+    if (action.type === 'date') {
+      value = new Date(action.value);
+    }
+
+    const updated = { ...selected, [action.type]: value };
+    todoUpdateHandler(updated);
+  };
 
   return (
     <div
@@ -38,10 +59,30 @@ const CalendarTodoMenu = () => {
           width: 100%;
         `}
       >
-        <Input type="text" value={selected.title} label="" />
-        <Input type="datetime-local" value={date} label="" />
-        <Input type="text" value={selected.tId} label="캘린더" />
-        <TextArea value={selected.desc} label="메모" placeholder="메모를 작성" />
+        <Input
+          type="text"
+          value={selected.title}
+          label=""
+          onChange={(e) => onTodoUpdate({ type: 'title', id: selected.cId, value: e.currentTarget.value })}
+        />
+        <Input
+          type="datetime-local"
+          value={datetimeFormatter(selected.date)}
+          label=""
+          onChange={(e) => onTodoUpdate({ type: 'date', id: selected.cId, value: e.currentTarget.value })}
+        />
+        <Input
+          type="text"
+          value={selected.tId}
+          label="캘린더"
+          onChange={(e) => onTodoUpdate({ type: 'tId', id: selected.cId, value: e.currentTarget.value })}
+        />
+        <TextArea
+          value={selected.desc}
+          label="메모"
+          placeholder="메모를 작성"
+          onChange={(e) => onTodoUpdate({ type: 'desc', id: selected.cId, value: e.currentTarget.value })}
+        />
       </form>
     </div>
   );

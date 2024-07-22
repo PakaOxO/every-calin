@@ -28,9 +28,14 @@ const CalendarTodo = ({ todo }: IProps) => {
         font-size: 0.8rem;
         display: flex;
         align-items: center;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* 인터넷익스플로러 */
+        user-select: none;
       `}
       key={todo.cId}
       onClick={selectTodoHandler}
+      onDoubleClick={selectTodoHandler}
     >
       {todo.title}
     </div>
