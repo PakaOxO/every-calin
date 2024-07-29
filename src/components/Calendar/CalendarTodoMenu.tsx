@@ -37,8 +37,12 @@ const CalendarTodoMenu = ({ todoUpdateHandler }: IProps) => {
   return (
     <div
       css={css`
-        width: 240px;
+        width: 280px;
+        height: 300px;
         padding: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid white;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       `}
       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();

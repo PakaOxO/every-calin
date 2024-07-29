@@ -44,3 +44,8 @@ export const selectedTodoState = atom<Todo | null>({
   default: null,
 });
 
+export const selectedTodoRefState = atom<HTMLDivElement | null>({
+  key: 'selectedTodoRefState',
+  default: null,
+});
+

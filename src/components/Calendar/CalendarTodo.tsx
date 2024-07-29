@@ -1,20 +1,30 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
-import { selectedTodoState, Todo } from '../../atom/Todo';
-import { useSetRecoilState } from 'recoil';
+import { selectedTodoRefState, selectedTodoState, Todo } from '../../atom/Todo';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 interface IProps {
   todo: Todo;
 }
 
 const CalendarTodo = ({ todo }: IProps) => {
-  const setSelected = useSetRecoilState(selectedTodoState);
+  const [selected, setSelected] = useRecoilState(selectedTodoState);
+  const setSelectedTodoRef = useSetRecoilState(selectedTodoRefState);
+  const todoRef = useRef<HTMLDivElement | null>(null);
 
   const selectTodoHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelected(todo);
   };
+
+  useEffect(() => {
+    if (selected && selected.id === todo.id) {
+      if (todoRef.current !== null) {
+        setSelectedTodoRef(todoRef.current);
+      }
+    }
+  }, [selected]);
 
   return (
     <div
@@ -36,6 +46,7 @@ const CalendarTodo = ({ todo }: IProps) => {
       key={todo.id}
       onClick={selectTodoHandler}
       onDoubleClick={selectTodoHandler}
+      ref={todoRef}
     >
       <p
         css={css`
