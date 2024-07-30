@@ -17,3 +17,10 @@ export const currMonthDatesState = selector<Date[][]>({
   },
 });
 
+/**
+ * Todo 드래그중 onDragEnter가 실행된 Date를 전역으로 저장
+ */
+export const dragOverDateState = atom<Date | null>({
+  key: 'dragOverDateState',
+  default: null,
+})
