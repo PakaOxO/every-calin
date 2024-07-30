@@ -8,7 +8,8 @@ interface IProps {
   todo: Todo;
 }
 
-const CalendarTodo = ({ todo }: IProps) => {
+// forwardRef를 사용하여 ref를 전달함
+const CalendarTodo = React.forwardRef(({ todo }: IProps, ref: React.ForwardedRef<HTMLDivElement> | undefined) => {
   const setSelected = useSetRecoilState(selectedTodoState);
 
   const selectTodoHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -36,6 +37,7 @@ const CalendarTodo = ({ todo }: IProps) => {
       key={todo.id}
       onClick={selectTodoHandler}
       onDoubleClick={selectTodoHandler}
+      ref={ref}
     >
       <p
         css={css`
@@ -48,7 +50,7 @@ const CalendarTodo = ({ todo }: IProps) => {
       </p>
     </div>
   );
-};
+});
 
 export default CalendarTodo;
 

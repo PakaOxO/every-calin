@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
-import { currDateState } from "../../atom/Date";
+import { currDateState, dragOverDateState } from "../../atom/Date";
 import CalendarTodo from "./CalendarTodo";
-import { Todo } from "../../atom/Todo";
+import { dragTodoState, Todo } from "../../atom/Todo";
 import { datetimeFormatter } from "../../core/date";
 import Draggable from "../UI/Draggable";
 
@@ -33,24 +33,36 @@ const areEqualProps = (prevProps: IProps, nextProps: IProps): boolean => {
   return true;
 };
 
-const CalendarDateCell = React.memo(
-  ({ date, todos, todoCreateHandler, isToday }: IProps) => {
+const CalendarDateCell = ({date, todos, todoCreateHandler, isToday}: IProps) => {
     const currDate = useRecoilValue<Date>(currDateState);
     const isThisMonth = currDate.getMonth() === date.getMonth();
+    const dragOverDate = useRecoilValue<Date | null>(dragOverDateState); // drag중 hover되는 DateCell의 Date 객체 저장
+    const dragTodo = useRecoilValue<Todo | null>(dragTodoState); // drag중인 Todo 객체 저장
+
+    // drag중 drop전에 drop된 UI를 미리 표시하는 UI
+    const skeletonTodo = useMemo(() => {
+      if (dragOverDate && dragOverDate.getMonth() === date.getMonth() && dragOverDate.getDate() === date.getDate() ? true : false) {
+        return (<CalendarTodo todo={dragTodo as Todo} />);
+      } else return;
+    }, [dragOverDate]);
 
     return (
+      // 기존에 CalendarDateCell에 있던 style을 Droppable에 적용함
       <div
         css={css`
-          flex: 1;
-          height: 101%;
-          border: 1px solid #aaa;
-          margin-top: -1px;
-          margin-right: -1px;
-          overflow: hidden;
+          box-sizing:border-box;
+          width: 100%;
+          height: 100%;
+          // flex: 1;
+          // height: 101%;
+          // border: 1px solid #aaa;
+          // margin-top: -1px;
+          // margin-right: -1px;
+          // overflow: hidden;
 
-          &:hover {
-            cursor: pointer;
-          }
+          // &:hover {
+          //   cursor: pointer;
+          // }
         `}
         onDoubleClick={() => todoCreateHandler(date)}
       >
@@ -106,12 +118,11 @@ const CalendarDateCell = React.memo(
                   </Draggable>
                 );
               })}
+              {skeletonTodo}
           </div>
         </div>
       </div>
     );
-  },
-  areEqualProps
-);
+  }
 
-export default CalendarDateCell;
+export default React.memo(CalendarDateCell, areEqualProps);

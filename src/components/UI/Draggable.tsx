@@ -1,23 +1,30 @@
 /** @jsxImportSource @emotion/react */
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { dragTodoState, Todo } from "../../atom/Todo";
 
 interface IProps {
-  children: React.ReactNode;
+  children: React.ReactElement;
   todo: Todo;
 }
 
 const Draggable = ({ children, todo }: IProps) => {
-  const setDragTodo = useSetRecoilState(dragTodoState);
+  const childRef = useRef<HTMLDivElement | null>(null);
+  const [dragTodo, setDragTodo] = useRecoilState(dragTodoState);
 
-  const onDragStartHandler = (
-    e: React.DragEvent<HTMLDivElement>,
-    todo: Todo
-  ) => {
+  const onDragStartHandler = (e: React.DragEvent<HTMLDivElement>, todo: Todo) => {
     setDragTodo(todo);
-  };
+    if (childRef.current) {
+      childRef.current.style.opacity = "0.5";
+    }
+  }
+
+  useEffect(() => {
+    if (dragTodo === null && childRef.current) {
+      childRef.current.style.opacity = "1";
+    }
+  }, [dragTodo]);
 
   return (
     <div
@@ -25,7 +32,9 @@ const Draggable = ({ children, todo }: IProps) => {
       onDragStart={(e) => onDragStartHandler(e, todo)}
       draggable={true}
     >
-      {children}
+      {React.Children.map(children, (child: React.ReactElement) => {
+        return React.cloneElement(child, { ref: childRef });
+      })}
     </div>
   );
 };
