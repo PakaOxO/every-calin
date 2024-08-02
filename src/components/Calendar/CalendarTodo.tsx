@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
-import { selectedTodoState, Todo } from '../../atom/Todo';
-import { useSetRecoilState } from 'recoil';
+import { selectedTodoRefState, selectedTodoState, Todo } from '../../atom/Todo';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 interface IProps {
   todo: Todo;
@@ -10,12 +10,21 @@ interface IProps {
 
 // forwardRef를 사용하여 ref를 전달함
 const CalendarTodo = React.forwardRef(({ todo }: IProps, ref: React.ForwardedRef<HTMLDivElement> | undefined) => {
-  const setSelected = useSetRecoilState(selectedTodoState);
+  const [selected, setSelected] = useRecoilState(selectedTodoState);
+  const setSelectedTodoRef = useSetRecoilState(selectedTodoRefState);
 
   const selectTodoHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelected(todo);
   };
+
+  useEffect(() => {
+    if (selected && selected.id === todo.id) {
+      if (ref && typeof ref !== 'function' && ref.current !== null) {
+        setSelectedTodoRef(ref.current);
+      }
+    }
+  }, [selected]);
 
   return (
     <div

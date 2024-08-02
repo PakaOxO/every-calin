@@ -1,6 +1,6 @@
-import { atom, selector } from "recoil";
-import { dateFormatter } from "../core/date";
-import { categoryMapState } from "./Category";
+import { atom, selector } from 'recoil';
+import { dateFormatter } from '../core/date';
+import { categoryMapState } from './Category';
 
 export interface Todo {
   id: string;
@@ -12,12 +12,12 @@ export interface Todo {
 }
 
 export const todoListState = atom<Todo[]>({
-  key: "todoListState",
+  key: 'todoListState',
   default: [],
 });
 
 export const dateMappedTodoListState = selector<Map<string, Todo[]>>({
-  key: "dateMappedTodoListState",
+  key: 'dateMappedTodoListState',
   get: ({ get }) => {
     const todos = get(todoListState);
     const categoryMap = get(categoryMapState);
@@ -40,11 +40,17 @@ export const dateMappedTodoListState = selector<Map<string, Todo[]>>({
 });
 
 export const selectedTodoState = atom<Todo | null>({
-  key: "selectedTodoState",
+  key: 'selectedTodoState',
+  default: null,
+});
+
+export const selectedTodoRefState = atom<HTMLDivElement | null>({
+  key: 'selectedTodoRefState',
   default: null,
 });
 
 export const dragTodoState = atom<Todo | null>({
-  key: "dragTodoState",
+  key: 'dragTodoState',
   default: null,
 });
+

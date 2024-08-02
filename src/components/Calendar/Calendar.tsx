@@ -9,8 +9,8 @@ import { currDateState } from '../../atom/Date';
 import CalendarTopMenu from './CalendarTopMenu';
 import CalendarSettingMenu from './CalendarSettingMenu';
 import { settingMenuState, todoMenuState } from '../../atom/Menu';
-import CalendarTodoMenu from './CalendarTodoMenu';
-import { selectedTodoState, Todo } from '../../atom/Todo';
+import { selectedTodoRefState, selectedTodoState, Todo } from '../../atom/Todo';
+import TodoPopup from './TodoPopup';
 
 const Calendar = () => {
   const currDate = useRecoilValue<Date>(currDateState);
@@ -18,8 +18,9 @@ const Calendar = () => {
     useCalendar();
   const dates: Date[][] = useMemo(() => getThisMonth(currDate, 6), [currDate]);
   const leftMenuIsOpen = useRecoilValue<boolean>(settingMenuState);
-  const rightMenuIsOpen = useRecoilValue<boolean>(todoMenuState);
+  const popupIsOpen = useRecoilValue<boolean>(todoMenuState);
   const [selectedTodo, setSelectedTodo] = useRecoilState<Todo | null>(selectedTodoState);
+  const [todoRef, setTodoRef] = useRecoilState(selectedTodoRefState);
 
   useEffect(() => {
     getCategoryList();
@@ -28,6 +29,7 @@ const Calendar = () => {
   const resetSelectedTodoHandler = () => {
     if (!!!selectedTodo) return;
     setSelectedTodo(null);
+    setTodoRef(null);
   };
 
   return (
@@ -65,17 +67,7 @@ const Calendar = () => {
         <CalendarTopMenu />
         <CalendarHeader date={currDate} />
         <CalendarBody days={days} dates={dates} todoCreateHandler={createTodo} />
-      </section>
-      <section
-        css={css`
-          width: ${rightMenuIsOpen ? '240px' : '0px'};
-          overflow: hidden;
-          transition: width 0.3s ease;
-          border-left: 1px solid #aaa;
-          margin-right: -1px;
-        `}
-      >
-        <CalendarTodoMenu todoUpdateHandler={updateTodo} />
+        <TodoPopup open={popupIsOpen} anchor={todoRef} todoUpdateHandler={updateTodo} />
       </section>
     </div>
   );
