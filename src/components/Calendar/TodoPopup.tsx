@@ -3,9 +3,6 @@ import Popup from '../UI/Popup';
 import CalendarTodoMenu from './CalendarTodoMenu';
 import { Todo } from '../../atom/Todo';
 
-type TVertical = 'top' | 'mid' | 'bottom';
-type THorizontal = 'left' | 'center' | 'right';
-
 interface IProps {
   open: boolean;
   anchor: HTMLDivElement | null;

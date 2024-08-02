@@ -49,3 +49,8 @@ export const selectedTodoRefState = atom<HTMLDivElement | null>({
   default: null,
 });
 
+export const dragTodoState = atom<Todo | null>({
+  key: 'dragTodoState',
+  default: null,
+});
+
